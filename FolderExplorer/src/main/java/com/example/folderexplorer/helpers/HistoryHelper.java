@@ -20,25 +20,27 @@ public class HistoryHelper {
             createHistoryList(session);
         }
         Stack<Folder> folderStack = (Stack<Folder>) session.getAttribute("historyList");
-        folderStack.push(folder);
+        if(folderStack.size() == 0){
+            folderStack.push(folder);
+        } else if(!folderStack.peek().equals(folder)){
+            folderStack.push(folder);
+        }
         session.setAttribute("historyList", folderStack);
     }
 
     @SuppressWarnings("unchecked")
-    public void removeFromHistoryList(HttpSession session, Folder folder){
+    public void removeFromHistoryList(HttpSession session, Folder folder) {
         if (session.getAttribute("historyList") == null) {
             createHistoryList(session);
             return;
         }
         Stack<Folder> folderStack = (Stack<Folder>) session.getAttribute("historyList");
-        while(!folderStack.peek().equals(folder)){
+        while (!folderStack.peek().equals(folder)) {
             folderStack.pop();
-            if(folderStack.size() == 0){
+            if (folderStack.size() == 0) {
                 break;
             }
         }
         session.setAttribute("historyList", folderStack);
     }
-
-
 }
