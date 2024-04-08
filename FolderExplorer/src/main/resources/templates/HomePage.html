@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Management Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .folder-path {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .folder-name {
+            font-size: 24px;
+            color: maroon;
+            margin-bottom: 20px;
+        }
+        .folder, .file {
+            border-bottom: 1px solid #ccc;
+            padding: 5px 0;
+        }
+        .folder a, .file a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #000;
+        }
+        .add-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="folder-path" th:unless="${session.historyList.isEmpty()}">
+    <div th:each="log : ${session.historyList}">
+    <a href="#" th:href="@{/home/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1 →</a>
+    </div>
+</div>
+
+<div class="folder-name" th:text="${rootFolder.getName()}">
+    Current folder name
+</div>
+<table class="folder" th:each="folder : ${rootFolder.getFolders()}">
+    <tr>
+        <th> <a href="#" th:href="@{/home/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder name </a> </th>
+        <th> <button> Rename </button> </th>
+        <th> <button> Delete </button> </th>
+    </tr>
+</table>
+<!--
+<div class="folder" th:each="folder : ${rootFolder.getFolders()}">
+    Child folder 1 <a href="#">Rename</a> <a href="#">Delete</a>
+</div>
+<div class="folder">
+    Child folder 2 <a href="#">Rename</a> <a href="#">Delete</a>
+</div>
+<div class="file">
+    File <a href="#">Rename</a> <a href="#">Delete</a> <a href="#">Download</a>
+</div>
+-->
+
+<div class="add-button">
+    <button onclick="addFolder()">Add folder</button>
+    <button onclick="addFile()">Add file</button>
+</div>
+
+<script>
+    function addFolder() {
+        // Implement the function to add a folder
+        alert('Add folder clicked!');
+    }
+    function addFile() {
+        // Implement the function to add a file
+        alert('Add file clicked!');
+    }
+</script>
+
+</body>
+</html>
