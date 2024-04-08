@@ -31,7 +31,7 @@ public class HistoryHelper {
             return;
         }
         Stack<Folder> folderStack = (Stack<Folder>) session.getAttribute("historyList");
-        while(folderStack.peek() != folder){
+        while(!folderStack.peek().equals(folder)){
             folderStack.pop();
             if(folderStack.size() == 0){
                 break;
