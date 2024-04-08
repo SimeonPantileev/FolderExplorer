@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NavigationImpl implements Navigation{
+public class NavigationImpl implements Navigation {
 
     private final StructureRepo structureRepo;
 
@@ -26,7 +26,12 @@ public class NavigationImpl implements Navigation{
     }
 
     @Override
-    public Folder backwards() {
-        return null;
+    public Folder createFolder(String folderName, int ancestorId) {
+        Folder newFolder = new Folder(folderName);
+        Folder ancestorFolder = structureRepo.getFolderById(ancestorId);
+        newFolder.setAncestorFolder(ancestorFolder);
+
+        structureRepo.createFolder(newFolder);
+        return newFolder;
     }
 }

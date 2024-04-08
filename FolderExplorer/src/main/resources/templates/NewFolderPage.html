@@ -8,24 +8,29 @@
         body {
             font-family: Arial, sans-serif;
         }
+
         .folder-path {
             font-size: 14px;
             margin-bottom: 10px;
         }
+
         .folder-name {
             font-size: 24px;
             color: maroon;
             margin-bottom: 20px;
         }
+
         .folder, .file {
             border-bottom: 1px solid #ccc;
             padding: 5px 0;
         }
+
         .folder a, .file a {
             margin-right: 10px;
             text-decoration: none;
             color: #000;
         }
+
         .add-button {
             margin-top: 20px;
         }
@@ -35,18 +40,32 @@
 
 <div class="folder-path" th:unless="${session.historyList.isEmpty()}">
     <div th:each="log : ${session.historyList}">
-    <a href="#" th:href="@{/home/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1 →</a>
+        <a href="#" th:href="@{/home/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1
+            →</a>
     </div>
 </div>
 
 <div class="folder-name" th:text="${rootFolder.getName()}">
     Current folder name
 </div>
-<table id="folderList" class="folder" th:each="folder : ${rootFolder.getFolders()}">
+
+<table id="folderList" class="folder">
+    <tr th:each="folder : ${rootFolder.getFolders()}">
+        <th><a href="#" th:href="@{/home/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder
+            name </a></th>
+        <th>
+            <button> Rename</button>
+        </th>
+        <th>
+            <button> Delete</button>
+        </th>
+    </tr>
     <tr>
-        <th> <a href="#" th:href="@{/home/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder name </a> </th>
-        <th> <button> Rename </button> </th>
-        <th> <button> Delete </button> </th>
+        <th>
+            <form th:action="@{__${requestURI}__}" th:object="${newFolder}" method="post">
+                <input type="text" placeholder="New folder name" th:field="*{folderName}">
+            </form>
+        </th>
     </tr>
 </table>
 <!--
@@ -62,21 +81,20 @@
 -->
 
 <div class="add-button">
-    <form  th:action="@{/home/{id}/new (id=${rootFolder.getFolderId()})}" method="get">
-    <button>Add folder</button>
-    </form>
+    <button onclick="addFolder()">Add folder</button>
     <button onclick="addFile()">Add file</button>
 </div>
 
 <script>
-    // function addFolder() {
-    //     var folderList = document.getElementById(`folderList`);
-    //     var newFolderItem = document.createElement(`div`);
-    //     newFolderItem.classList.add(`folder-item`);
-    //     newFolderItem.innerHTML = `<input type= "text" placeholder="New folder name" th:field="*{}"> `;
-    //     // Implement the function to add a folder
-    //     alert('Add folder clicked!');
-    // }
+    function addFolder() {
+        // var folderList = document.getElementById(`folderList`);
+        // var newFolderItem = document.createElement(`div`);
+        // newFolderItem.classList.add(`folder-item`);
+        // newFolderItem.innerHTML = `<input type= "text" placeholder="New folder name" th:field="*{}"> `;
+        // Implement the function to add a folder
+        alert('Add folder clicked!');
+    }
+
     function addFile() {
         // Implement the function to add a file
         alert('Add file clicked!');

@@ -5,4 +5,5 @@ import com.example.folderexplorer.models.Folder;
 public interface StructureRepo {
     Folder getFolderById(int id);
     Folder getRoot();
+    void createFolder(Folder folder);
 }

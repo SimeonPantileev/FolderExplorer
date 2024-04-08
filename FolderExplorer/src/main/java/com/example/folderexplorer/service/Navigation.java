@@ -5,6 +5,5 @@ import com.example.folderexplorer.models.Folder;
 public interface Navigation {
     Folder getRoot();
     Folder enterFolderById(int folderId);
-    Folder backwards();
-
+    Folder createFolder(String folderName, int ancestorId);
 }
