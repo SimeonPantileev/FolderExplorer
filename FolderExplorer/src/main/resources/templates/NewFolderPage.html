@@ -57,12 +57,15 @@
             <button> Rename</button>
         </th>
         <th>
-            <button> Delete</button>
+            <form method="get" th:action="@{/home/{id}/delete/{folderToDeleteId}
+                    (id = ${rootFolder.getFolderId()}, folderToDeleteId = ${folder.getFolderId()})}">
+                <button> Delete </button>
+            </form>
         </th>
     </tr>
     <tr>
         <th>
-            <form th:action="@{__${requestURI}__}" th:object="${newFolder}" method="post">
+            <form id="create_form" th:action="@{__${requestURI}__}" th:object="${newFolder}" method="post">
                 <input type="text" placeholder="New folder name" th:field="*{folderName}">
             </form>
         </th>
@@ -81,7 +84,7 @@
 -->
 
 <div class="add-button">
-    <button onclick="addFolder()">Add folder</button>
+    <button onclick="addFolder()" >Add folder</button>
     <button onclick="addFile()">Add file</button>
 </div>
 
@@ -92,7 +95,7 @@
         // newFolderItem.classList.add(`folder-item`);
         // newFolderItem.innerHTML = `<input type= "text" placeholder="New folder name" th:field="*{}"> `;
         // Implement the function to add a folder
-        alert('Add folder clicked!');
+        document.getElementById(`create_form`).submit();
     }
 
     function addFile() {
