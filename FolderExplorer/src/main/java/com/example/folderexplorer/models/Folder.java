@@ -1,13 +1,36 @@
 package com.example.folderexplorer.models;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "folders")
 public class Folder {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "folder_id")
     private int folderId;
+    @Column(name = "name")
     private String name;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "structure",
+            joinColumns = @JoinColumn(name = "ancestor_id"),
+            inverseJoinColumns = @JoinColumn(name = "folder_id"))
     private List<Folder> folders;
+
+    @ManyToOne()
+    @JoinTable(
+            name = "structure",
+            joinColumns = @JoinColumn(name = "folder_id"),
+            inverseJoinColumns = @JoinColumn(name = "ancestor_id"))
     private Folder ancestorFolder;
+
+    public Folder() {
+    }
 
     public Folder(String name) {
         this.name = name;
@@ -50,5 +73,13 @@ public class Folder {
 
     public void setAncestorFolder(Folder ancestorFolder) {
         this.ancestorFolder = ancestorFolder;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if (!(o instanceof Folder)) return false;
+        Folder folder = (Folder) o;
+        return getName().equals(folder.getName());
     }
 }
