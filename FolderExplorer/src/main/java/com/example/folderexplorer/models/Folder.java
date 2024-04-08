@@ -15,7 +15,7 @@ public class Folder {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinTable(
             name = "structure",
             joinColumns = @JoinColumn(name = "ancestor_id"),
@@ -77,7 +77,7 @@ public class Folder {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
+        if (this == o) return true;
         if (!(o instanceof Folder)) return false;
         Folder folder = (Folder) o;
         return getName().equals(folder.getName());

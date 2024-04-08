@@ -46,7 +46,12 @@
     <tr>
         <th> <a href="#" th:href="@{/home/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder name </a> </th>
         <th> <button> Rename </button> </th>
-        <th> <button> Delete </button> </th>
+        <th>
+            <form method="get" th:action="@{/home/{id}/delete/{folderToDeleteId}
+                    (id = ${rootFolder.getFolderId()}, folderToDeleteId = ${folder.getFolderId()})}">
+            <button> Delete </button>
+            </form>
+        </th>
     </tr>
 </table>
 <!--

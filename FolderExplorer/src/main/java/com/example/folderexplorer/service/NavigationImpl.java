@@ -34,4 +34,10 @@ public class NavigationImpl implements Navigation {
         structureRepo.createFolder(newFolder);
         return newFolder;
     }
+
+    @Override
+    public void deleteFolder(int folderId) {
+        Folder folderToDelete = structureRepo.getFolderById(folderId);
+        structureRepo.deleteFolder(folderToDelete);
+    }
 }

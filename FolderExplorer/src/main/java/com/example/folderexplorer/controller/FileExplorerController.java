@@ -75,5 +75,10 @@ public class FileExplorerController {
         return "redirect:/home/" + id;
     }
 
+    @GetMapping("/{id}/delete/{folderToDelete}")
+    public String deleteFolder(@PathVariable int id, @PathVariable int folderToDelete, Model model, HttpSession session){
+        navigationService.deleteFolder(folderToDelete);
+        return "redirect:/home/" + id;
+    }
 
 }

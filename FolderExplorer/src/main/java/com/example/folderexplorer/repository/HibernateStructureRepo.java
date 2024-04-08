@@ -41,4 +41,13 @@ public class HibernateStructureRepo implements StructureRepo {
             session.getTransaction().commit();
         }
     }
+
+    @Override
+    public void deleteFolder(Folder folder) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.remove(folder);
+            session.getTransaction().commit();
+        }
+    }
 }
