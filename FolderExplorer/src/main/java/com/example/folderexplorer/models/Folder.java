@@ -17,14 +17,14 @@ public class Folder {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinTable(
-            name = "structure",
+            name = "folders_structure",
             joinColumns = @JoinColumn(name = "ancestor_id"),
             inverseJoinColumns = @JoinColumn(name = "folder_id"))
     private List<Folder> folders;
 
     @ManyToOne()
     @JoinTable(
-            name = "structure",
+            name = "folders_structure",
             joinColumns = @JoinColumn(name = "folder_id"),
             inverseJoinColumns = @JoinColumn(name = "ancestor_id"))
     private Folder ancestorFolder;

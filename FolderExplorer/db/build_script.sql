@@ -5,7 +5,7 @@ create table folder_explorer.folders
     name      varchar(100) not null
 );
 
-create table folder_explorer.structure
+create table folder_explorer.folders_structure
 (
     folder_id   int null,
     ancestor_id int null,
