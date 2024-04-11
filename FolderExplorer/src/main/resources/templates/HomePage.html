@@ -35,7 +35,7 @@
 
 <div class="folder-path" th:unless="${session.historyList.isEmpty()}">
     <div th:each="log : ${session.historyList}">
-    <a href="#" th:href="@{/home/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1 →</a>
+    <a href="#" th:href="@{/folder/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1 →</a>
     </div>
 </div>
 
@@ -44,10 +44,10 @@
 </div>
 <table id="folderList" class="folder" th:each="folder : ${rootFolder.getFolders()}">
     <tr>
-        <th> <a href="#" th:href="@{/home/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder name </a> </th>
+        <th> <a href="#" th:href="@{/folder/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder name </a> </th>
         <th> <button> Rename </button> </th>
         <th>
-            <form method="get" th:action="@{/home/{id}/delete/{folderToDeleteId}
+            <form method="get" th:action="@{/folder/{id}/delete/{folderToDeleteId}
                     (id = ${rootFolder.getFolderId()}, folderToDeleteId = ${folder.getFolderId()})}">
             <button> Delete </button>
             </form>
@@ -67,25 +67,16 @@
 -->
 
 <div class="add-button">
-    <form  th:action="@{/home/{id}/new (id=${rootFolder.getFolderId()})}" method="get">
+    <form  th:action="@{/folder/{id}/new (id=${rootFolder.getFolderId()})}" method="get">
     <button>Add folder</button>
     </form>
-    <button onclick="addFile()">Add file</button>
+    <form  th:action="@{/folder/{id}/file/upload (id=${rootFolder.getFolderId()})}" method="get">
+    <button>Add file</button>
+    </form>
 </div>
 
 <script>
-    // function addFolder() {
-    //     var folderList = document.getElementById(`folderList`);
-    //     var newFolderItem = document.createElement(`div`);
-    //     newFolderItem.classList.add(`folder-item`);
-    //     newFolderItem.innerHTML = `<input type= "text" placeholder="New folder name" th:field="*{}"> `;
-    //     // Implement the function to add a folder
-    //     alert('Add folder clicked!');
-    // }
-    function addFile() {
-        // Implement the function to add a file
-        alert('Add file clicked!');
-    }
+
 </script>
 
 </body>

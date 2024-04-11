@@ -40,7 +40,7 @@
 
 <div class="folder-path" th:unless="${session.historyList.isEmpty()}">
     <div th:each="log : ${session.historyList}">
-        <a href="#" th:href="@{/home/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1
+        <a href="#" th:href="@{/folder/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1
             →</a>
     </div>
 </div>
@@ -57,7 +57,7 @@
             <button> Rename</button>
         </th>
         <th>
-            <form method="get" th:action="@{/home/{id}/delete/{folderToDeleteId}
+            <form method="get" th:action="@{/folder/{id}/delete/{folderToDeleteId}
                     (id = ${rootFolder.getFolderId()}, folderToDeleteId = ${folder.getFolderId()})}">
                 <button> Delete </button>
             </form>
