@@ -1,84 +1,50 @@
 package com.example.folderexplorer.controller;
 
-import com.example.folderexplorer.helpers.HistoryHelper;
 import com.example.folderexplorer.models.Folder;
-import com.example.folderexplorer.models.dtos.FolderDto;
+import com.example.folderexplorer.service.FileManager;
 import com.example.folderexplorer.service.Navigation;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.swing.text.html.Option;
+import java.io.FileNotFoundException;
+import java.util.Optional;
 
 @Controller
-@RequestMapping("/home")
+@RequestMapping("folder/{id}/file")
 public class FileExplorerController {
     private final Navigation navigationService;
-    private final HistoryHelper historyHelper;
+    private final FileManager fileManager;
 
-    @Autowired
-    public FileExplorerController(Navigation navigationService, HistoryHelper historyHelper) {
+    public FileExplorerController(Navigation navigationService, FileManager fileManager) {
         this.navigationService = navigationService;
-        this.historyHelper = historyHelper;
+        this.fileManager = fileManager;
     }
 
-    @ModelAttribute("requestURI")
-    public String requestURI(final HttpServletRequest request) {
-        return request.getRequestURI();
-    }
-
-    @GetMapping
-    public String showRootPage(Model model, HttpSession session) {
-
-        Folder rootFolder = navigationService.getRoot();
-        historyHelper.createHistoryList(session);
-        model.addAttribute("rootFolder", rootFolder);
-        return "HomePage";
-    }
-
-    @GetMapping("/{id}")
-    public String showCurrentFolder(@PathVariable int id, Model model, HttpSession session) {
+    @GetMapping("/upload")
+    public String showFileUploadPage(@PathVariable int id, Model model, HttpSession session){
         Folder currentFolder = navigationService.enterFolderById(id);
-        historyHelper.addToHistoryList(session, currentFolder.getAncestorFolder());
         model.addAttribute("rootFolder", currentFolder);
-        return "HomePage";
+//        model.addAttribute("file", new FileDto());
+        return "AddFilePage";
     }
-
-    //ToDo change mapping to post?
-    @GetMapping("/backwards/{id}")
-    public String showCurrentFolderBackwards(@PathVariable int id, Model model, HttpSession session) {
-        Folder currentFolder = navigationService.enterFolderById(id);
-        historyHelper.removeFromHistoryList(session, currentFolder.getAncestorFolder());
-        model.addAttribute("rootFolder", currentFolder);
-        return "HomePage";
-    }
-
-    @GetMapping("{id}/new")
-    public String showCreateFolderPage (@PathVariable int id, Model model, HttpSession session) {
-        Folder currentFolder = navigationService.enterFolderById(id);
-        model.addAttribute("newFolder", new FolderDto());
-        model.addAttribute("rootFolder", currentFolder);
-        return "NewFolderPage";
-    }
-
-    //ToDo add mapper inseatd of mapping logic in controller
-    @PostMapping("{id}/new")
-    public String createFolder(@PathVariable int id,
-                               @ModelAttribute("newFolder") FolderDto folderDto,
-                               BindingResult bindingResult,
-                               Model model,
-                               HttpSession session) {
-        folderDto.setAncestorFolderId(id);
-        navigationService.createFolder(folderDto.getFolderName(), folderDto.getAncestorFolderId());
-        return "redirect:/home/" + id;
-    }
-
-    @GetMapping("/{id}/delete/{folderToDelete}")
-    public String deleteFolder(@PathVariable int id, @PathVariable int folderToDelete, Model model, HttpSession session){
-        navigationService.deleteFolder(folderToDelete);
-        return "redirect:/home/" + id;
+    @PostMapping("/upload")
+    public String handleFileUpload(@RequestParam("file") MultipartFile file,
+                                   @RequestParam("fileName") Optional<String> fileName,
+                                   Model model,
+                                   @PathVariable int id) {
+        try{
+            fileManager.fileUpload(file, fileName);
+            model.addAttribute("rootFolder", navigationService.enterFolderById(id));
+            return "redirect:/folder/" + id;
+        } catch (FileNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
 }
