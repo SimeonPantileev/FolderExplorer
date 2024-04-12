@@ -109,16 +109,31 @@
     function uploadFile(file) {
 
         let formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', file)
         let fileName = document.getElementById(`fileName`).value;
-        formData.append(`fileName`, fileName);
-
         let pathParts = window.location.pathname.split(`/`);
         let id = pathParts[2];
         console.log(id);
+
+        // const dto = {
+        //     name: fileName,
+        //     file: formData,
+        //     folderId: id
+        // }
+        //
+        formData.append('file', file);
+
+        formData.append(`fileName`, fileName);
+
+
+
         fetch("upload", {
             method: 'POST',
             body: formData
+            // headers: {
+            //   'Content-Type': 'application/json',
+            // },
+            // body: JSON.stringify(dto)
         })
             .then(response => {
                 if (response.ok) {
