@@ -20,10 +20,12 @@ public class HistoryHelper {
             createHistoryList(session);
         }
         Stack<Folder> folderStack = (Stack<Folder>) session.getAttribute("historyList");
-        if(folderStack.size() == 0){
-            folderStack.push(folder);
-        } else if(!folderStack.peek().equals(folder)){
-            folderStack.push(folder);
+        if (folder != null) {
+            if (folderStack.size() == 0) {
+                folderStack.push(folder);
+            } else if (!folderStack.peek().equals(folder)) {
+                folderStack.push(folder);
+            }
         }
         session.setAttribute("historyList", folderStack);
     }
@@ -37,7 +39,7 @@ public class HistoryHelper {
         Stack<Folder> folderStack = (Stack<Folder>) session.getAttribute("historyList");
         while (!folderStack.peek().equals(folder)) {
             folderStack.pop();
-            if (folderStack.size() == 0) {
+            if(folderStack.size() == 0){
                 break;
             }
         }
