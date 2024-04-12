@@ -40,4 +40,11 @@ public class NavigationImpl implements Navigation {
         Folder folderToDelete = enterFolderById(folderId);
         folderStructureRepo.deleteFolder(folderToDelete);
     }
+
+    @Override
+    public Folder renameFolder(int folderId, String folderName) {
+        Folder folderToUpdate = enterFolderById(folderId);
+        folderToUpdate.setName(folderName);
+        return folderStructureRepo.updateFolder(folderToUpdate);
+    }
 }

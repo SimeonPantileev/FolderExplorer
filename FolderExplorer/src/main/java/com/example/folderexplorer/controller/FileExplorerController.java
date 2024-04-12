@@ -62,7 +62,7 @@ public class FileExplorerController {
         return "redirect:/folder/" + folderId;
     }
 
-    @GetMapping("/update/{fileToUpdateId}")
+    @GetMapping("/rename/{fileToUpdateId}")
     public String showRenamePage(@PathVariable int folderId,
                                  @PathVariable int fileToUpdateId,
                                  Model model) {
@@ -74,7 +74,7 @@ public class FileExplorerController {
         return "FileRename";
     }
 
-    @PostMapping("/update/{fileToUpdateId}")
+    @PostMapping("/rename/{fileToUpdateId}")
     public String renameFile(@PathVariable int folderId,
                              @PathVariable int fileToUpdateId,
                              @ModelAttribute("newFileName") String fileName) {

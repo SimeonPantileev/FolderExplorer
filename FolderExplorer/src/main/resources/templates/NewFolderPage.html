@@ -70,6 +70,29 @@
             </form>
         </th>
     </tr>
+    <!--Files-->
+    <tr class="file-row" th:each="file : ${rootFolder.getFiles()}">
+        <th>
+            <div class="file-name" th:text="${file.getName()}"> File name</div>
+        </th>
+        <th>
+            <form method="get" th:action="@{/folder/{folderId}/file/rename/{fileToUpdate}
+                    (folderId = ${rootFolder.getFolderId()}, fileToUpdate = ${file.getFileId()})}">
+                <button> Rename</button>
+            </form>
+        </th>
+        <th>
+            <form method="get" th:action="@{/folder/{folderId}/file/delete/{fileToDelete}
+                    (folderId = ${rootFolder.getFolderId()}, fileToDelete = ${file.getFileId()})}">
+                <button> Delete</button>
+            </form>
+        </th>
+        <th>
+            <form method="get">
+                <button> Download</button>
+            </form>
+        </th>
+    </tr>
 </table>
 <!--
 <div class="folder" th:each="folder : ${rootFolder.getFolders()}">

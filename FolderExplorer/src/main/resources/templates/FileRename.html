@@ -124,7 +124,7 @@
                 <button onclick="renameFile()"> Rename </button>
             </div>
           <div th:unless="${file.getFileId() == fileToUpdate.getFileId()}">
-            <form method="get" th:action="@{/folder/{folderId}/file/update/{fileToUpdate}
+            <form method="get" th:action="@{/folder/{folderId}/file/rename/{fileToUpdate}
                     (folderId = ${rootFolder.getFolderId()}, fileToUpdate = ${file.getFileId()})}">
               <button> Rename</button>
             </form>

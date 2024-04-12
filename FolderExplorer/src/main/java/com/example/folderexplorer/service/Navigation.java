@@ -7,4 +7,5 @@ public interface Navigation {
     Folder enterFolderById(int folderId);
     Folder createFolder(String folderName, int ancestorId);
     void deleteFolder(int folderId);
+    Folder renameFolder(int folderId, String folderName);
 }

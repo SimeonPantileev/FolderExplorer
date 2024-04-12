@@ -48,7 +48,7 @@ public class FolderExplorerController {
     }
 
     @GetMapping("{id}/new")
-    public String showCreateFolderPage (@PathVariable int id, Model model, HttpSession session) {
+    public String showCreateFolderPage(@PathVariable int id, Model model, HttpSession session) {
         Folder currentFolder = navigationService.enterFolderById(id);
         model.addAttribute("newFolder", new FolderDto());
         model.addAttribute("rootFolder", currentFolder);
@@ -68,9 +68,28 @@ public class FolderExplorerController {
     }
 
     @GetMapping("/{id}/delete/{folderToDelete}")
-    public String deleteFolder(@PathVariable int id, @PathVariable int folderToDelete, Model model, HttpSession session){
+    public String deleteFolder(@PathVariable int id, @PathVariable int folderToDelete, Model model, HttpSession session) {
         navigationService.deleteFolder(folderToDelete);
         return "redirect:/folder/" + id;
+    }
+
+    @GetMapping("/{folderId}/rename/{folderToRename}")
+    public String showRenameFolderPage(@PathVariable int folderId,
+                                       @PathVariable int folderToRename,
+                                       Model model) {
+        Folder currentFolder = navigationService.enterFolderById(folderId);
+        model.addAttribute("rootFolder", currentFolder);
+        model.addAttribute("folderToRename", folderToRename);
+        model.addAttribute("newFolderName", "");
+        return "FolderRename";
+    }
+
+    @PostMapping("/{folderId}/rename/{folderToRename}")
+    public String renameFolder(@PathVariable int folderId,
+                               @PathVariable int folderToRename,
+                               @ModelAttribute("newFolderName") String folderName) {
+        navigationService.renameFolder(folderToRename, folderName);
+        return "redirect:/folder/" + folderId;
     }
 
 }

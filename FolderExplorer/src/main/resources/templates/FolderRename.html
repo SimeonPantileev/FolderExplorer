@@ -35,6 +35,7 @@
             border-top: 2px solid #d3d3d3; /* Adds a top border */
             border-bottom: 2px solid #d3d3d3; /* Adds a bottom border */
         }
+
         .folder-row {
             font-weight: bold; /* Makes the text bold */
             border-top: 2px solid #d3d3d3; /* Adds a top border */
@@ -55,6 +56,7 @@
         .file-row .button:hover {
             background-color: #d0d0d0; /* Changes the background on hover */
         }
+
         table {
             /*
             width: 100%; !* Sets the width of the table to fill the container *!
@@ -92,13 +94,28 @@
 <table id="folderList">
     <!--Folders-->
     <tr class="folder-row" th:each="folder : ${rootFolder.getFolders()}">
-        <th><a href="#" th:href="@{/folder/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder
-            name </a></th>
         <th>
+          <div th:if="${folder.getFolderId() == folderToRename}">
+            <form id="rename_form" th:action="@{__${requestURI}__}" method="post">
+              <input class="file-name" type="text" th:value="${newFolderName}" name="newFolderName" th:placeholder="${folder.getName()}" >
+            </form>
+          </div>
+          <div th:unless="${folder.getFolderId() == folderToRename}">
+            <a href="#" th:href="@{/folder/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}">
+              Folder name </a>
+          </div>
+        </th>
+        <th>
+          <div th:if="${folder.getFolderId() == folderToRename}">
+          <button onclick="renameFolder()"> Rename</button>
+            </div>
+
+          <div th:unless="${folder.getFolderId() == folderToRename}">
             <form method="get" th:action="@{/folder/{folderId}/rename/{folderToRename}
              (folderId = ${rootFolder.getFolderId()}, folderToRename = ${folder.getFolderId()})}">
-                <button> Rename</button>
+              <button> Rename</button>
             </form>
+          </div>
         </th>
         <th>
             <form method="get" th:action="@{/folder/{id}/delete/{folderToDeleteId}
@@ -153,7 +170,9 @@
 </div>
 
 <script>
-
+  function renameFolder() {
+    document.getElementById(`rename_form`).submit();
+  }
 </script>
 
 </body>

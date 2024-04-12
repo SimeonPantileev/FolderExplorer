@@ -34,12 +34,13 @@ public class HibernateFolderStructureRepo implements FolderStructureRepo {
     }
 
     @Override
-    public void createFolder(Folder folder) {
+    public Folder createFolder(Folder folder) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.persist(folder);
             session.getTransaction().commit();
         }
+        return folder;
     }
 
     @Override
@@ -49,5 +50,15 @@ public class HibernateFolderStructureRepo implements FolderStructureRepo {
             session.remove(folder);
             session.getTransaction().commit();
         }
+    }
+
+    @Override
+    public Folder updateFolder(Folder folder) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.merge(folder);
+            session.getTransaction().commit();
+        }
+        return folder;
     }
 }
