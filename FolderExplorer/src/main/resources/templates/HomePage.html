@@ -113,7 +113,8 @@
             <button> Rename</button>
         </th>
         <th>
-            <form method="get">
+            <form method="get" th:action="@{/folder/{folderId}/file/delete/{fileToDelete}
+                    (folderId = ${rootFolder.getFolderId()}, fileToDelete = ${file.getFileId()})}">
                 <button> Delete</button>
             </form>
         </th>

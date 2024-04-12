@@ -51,5 +51,12 @@ public class FileExplorerController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/delete/{fileToDelete}")
+    public String deleteFile(@PathVariable int id, @PathVariable int fileToDelete,
+                               Model model,
+                               HttpSession session){
+        fileManager.deleteFile(fileToDelete);
+        return "redirect:/folder/" + id;
+    }
 
 }
