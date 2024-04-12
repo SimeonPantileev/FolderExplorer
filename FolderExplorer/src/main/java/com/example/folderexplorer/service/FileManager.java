@@ -10,5 +10,6 @@ public interface FileManager {
     void fileUpload(File file, MultipartFile multipartFile) throws FileNotFoundException;
     File getFileById(int id);
     void deleteFile(int fileId);
+    File renameFile(int id, String newFileName);
 
 }

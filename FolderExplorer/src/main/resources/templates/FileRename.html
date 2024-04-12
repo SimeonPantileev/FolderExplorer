@@ -35,6 +35,7 @@
             border-top: 2px solid #d3d3d3; /* Adds a top border */
             border-bottom: 2px solid #d3d3d3; /* Adds a bottom border */
         }
+
         .folder-row {
             font-weight: bold; /* Makes the text bold */
             border-top: 2px solid #d3d3d3; /* Adds a top border */
@@ -55,6 +56,7 @@
         .file-row .button:hover {
             background-color: #d0d0d0; /* Changes the background on hover */
         }
+
         table {
             /*
             width: 100%; !* Sets the width of the table to fill the container *!
@@ -107,13 +109,26 @@
     <!--Files-->
     <tr class="file-row" th:each="file : ${rootFolder.getFiles()}">
         <th>
-            <div class="file-name" th:text="${file.getName()}"> File name</div>
+            <div th:if="${file.getFileId() == fileToUpdate.getFileId()}">
+                <form id="rename_form" th:action="@{__${requestURI}__}" method="post">
+                    <input class="file-name" type="text" th:value="${newFileName}" name="newFileName" th:placeholder="${file.getName()}" >
+                </form>
+            </div>
+
+            <div th:unless="${file.getFileId() == fileToUpdate.getFileId()}">
+                <div class="file-name" th:text="${file.getName()}"> File name</div>
+            </div>
         </th>
         <th>
+            <div th:if="${file.getFileId() == fileToUpdate.getFileId()}">
+                <button onclick="renameFile()"> Rename </button>
+            </div>
+          <div th:unless="${file.getFileId() == fileToUpdate.getFileId()}">
             <form method="get" th:action="@{/folder/{folderId}/file/update/{fileToUpdate}
                     (folderId = ${rootFolder.getFolderId()}, fileToUpdate = ${file.getFileId()})}">
-                <button> Rename</button>
+              <button> Rename</button>
             </form>
+          </div>
         </th>
         <th>
             <form method="get" th:action="@{/folder/{folderId}/file/delete/{fileToDelete}
@@ -150,7 +165,9 @@
 </div>
 
 <script>
-
+    function renameFile() {
+        document.getElementById(`rename_form`).submit();
+    }
 </script>
 
 </body>

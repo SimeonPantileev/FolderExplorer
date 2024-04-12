@@ -1,15 +1,14 @@
 package com.example.folderexplorer.repository;
 
 import com.example.folderexplorer.exceptions.EntityNotFoundException;
-import com.example.folderexplorer.models.Folder;
+import com.example.folderexplorer.models.File;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.example.folderexplorer.models.File;
-
 @Repository
-public class HibernateFileRepo implements FileRepo{
+public class HibernateFileRepo implements FileRepo {
     private final SessionFactory sessionFactory;
 
     public HibernateFileRepo(SessionFactory sessionFactory) {
@@ -18,7 +17,16 @@ public class HibernateFileRepo implements FileRepo{
 
     @Override
     public File getFileByFileAddress(String fileAddress) {
-        return null;
+        try (Session session = sessionFactory.openSession()) {
+            String hql = "FROM File WHERE fileAddress = :file_address";
+            Query<File> query = session.createQuery(hql, File.class);
+            query.setParameter("file_address", fileAddress);
+            File file = query.uniqueResult();
+            if(file == null){
+                throw new EntityNotFoundException("File", "address", fileAddress);
+            }
+            return file;
+        }
     }
 
     @Override
@@ -33,12 +41,13 @@ public class HibernateFileRepo implements FileRepo{
     }
 
     @Override
-    public void createFile(File file) {
+    public File createFile(File file) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.persist(file);
             session.getTransaction().commit();
         }
+        return file;
     }
 
     @Override
@@ -48,5 +57,15 @@ public class HibernateFileRepo implements FileRepo{
             session.remove(file);
             session.getTransaction().commit();
         }
+    }
+
+    @Override
+    public File updateFile(File file) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.merge(file);
+            session.getTransaction().commit();
+        }
+        return file;
     }
 }

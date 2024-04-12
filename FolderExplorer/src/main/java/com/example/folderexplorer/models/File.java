@@ -56,4 +56,11 @@ public class File {
     public void setFileAddress(String fileAddress) {
         this.fileAddress = fileAddress;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Folder)) return false;
+        File file = (File) o;
+        return getName().equals(file.getName()) && getFolder().equals(file.getFolder());
+    }
 }

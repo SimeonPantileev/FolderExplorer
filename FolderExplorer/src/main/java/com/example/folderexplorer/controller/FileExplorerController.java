@@ -3,7 +3,6 @@ package com.example.folderexplorer.controller;
 import com.example.folderexplorer.helpers.FileMapper;
 import com.example.folderexplorer.models.File;
 import com.example.folderexplorer.models.Folder;
-import com.example.folderexplorer.models.dtos.FileDto;
 import com.example.folderexplorer.service.FileManager;
 import com.example.folderexplorer.service.Navigation;
 import jakarta.servlet.http.HttpSession;
@@ -18,7 +17,7 @@ import java.io.FileNotFoundException;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("folder/{id}/file")
+@RequestMapping("folder/{folderId}/file")
 public class FileExplorerController {
     private final Navigation navigationService;
     private final FileManager fileManager;
@@ -31,32 +30,55 @@ public class FileExplorerController {
     }
 
     @GetMapping("/upload")
-    public String showFileUploadPage(@PathVariable int id, Model model, HttpSession session){
-        Folder currentFolder = navigationService.enterFolderById(id);
+    public String showFileUploadPage(@PathVariable int folderId, Model model, HttpSession session) {
+        Folder currentFolder = navigationService.enterFolderById(folderId);
         model.addAttribute("rootFolder", currentFolder);
         return "AddFilePage";
     }
+
     @PostMapping("/upload")
     public String handleFileUpload(/*@RequestBody FileDto dto,*/
-                                   @RequestParam("file") MultipartFile fileContent,
-                                   @RequestParam("fileName") Optional<String> fileName,
-                                   Model model,
-                                   @PathVariable int id) {
-        try{
-            File file = new File(fileName.orElse("New File"), navigationService.enterFolderById(id));
+            @RequestParam("file") MultipartFile fileContent,
+            @RequestParam("fileName") Optional<String> fileName,
+            Model model,
+            @PathVariable int folderId) {
+        try {
+            String name = "New File";
+            if (fileName.isPresent() && fileName.get().length() != 0) {
+                name = fileName.get();
+            }
+            File file = new File(name, navigationService.enterFolderById(folderId));
             fileManager.fileUpload(file, fileContent);
-            model.addAttribute("rootFolder", navigationService.enterFolderById(id));
-            return "redirect:/folder/" + id;
-        } catch (FileNotFoundException e){
+            model.addAttribute("rootFolder", navigationService.enterFolderById(folderId));
+            return "redirect:/folder/" + folderId;
+        } catch (FileNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
+
     @GetMapping("/delete/{fileToDelete}")
-    public String deleteFile(@PathVariable int id, @PathVariable int fileToDelete,
-                               Model model,
-                               HttpSession session){
+    public String deleteFile(@PathVariable int folderId, @PathVariable int fileToDelete) {
         fileManager.deleteFile(fileToDelete);
-        return "redirect:/folder/" + id;
+        return "redirect:/folder/" + folderId;
     }
 
+    @GetMapping("/update/{fileToUpdateId}")
+    public String showRenamePage(@PathVariable int folderId,
+                                 @PathVariable int fileToUpdateId,
+                                 Model model) {
+        Folder currentFolder = navigationService.enterFolderById(folderId);
+        File fileToUpdate = fileManager.getFileById(fileToUpdateId);
+        model.addAttribute("rootFolder", currentFolder);
+        model.addAttribute("fileToUpdate", fileToUpdate);
+        model.addAttribute("newFileName", "");
+        return "FileRename";
+    }
+
+    @PostMapping("/update/{fileToUpdateId}")
+    public String renameFile(@PathVariable int folderId,
+                             @PathVariable int fileToUpdateId,
+                             @ModelAttribute("newFileName") String fileName) {
+        fileManager.renameFile(fileToUpdateId, fileName);
+        return "redirect:/folder/" + folderId;
+    }
 }
