@@ -31,7 +31,7 @@ public class Folder {
     private Folder ancestorFolder;
 
     @OneToMany(mappedBy = "folder", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<File> files;
+    private List<File> files;
 
 
     public Folder() {
@@ -80,11 +80,11 @@ public class Folder {
         this.ancestorFolder = ancestorFolder;
     }
 
-    public Set<File> getFiles() {
+    public List<File> getFiles() {
         return files;
     }
 
-    public void setFiles(Set<File> files) {
+    public void setFiles(List<File> files) {
         this.files = files;
     }
 
