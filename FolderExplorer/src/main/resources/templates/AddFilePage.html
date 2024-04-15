@@ -4,172 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Management Interface</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .folder-path {
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        .folder-name {
-            font-size: 24px;
-            color: maroon;
-            margin-bottom: 20px;
-        }
-        .folder, .file {
-            border-bottom: 1px solid #ccc;
-            padding: 5px 0;
-        }
-        .folder a, .file a {
-            margin-right: 10px;
-            text-decoration: none;
-            color: #000;
-        }
-        .add-button {
-            margin-top: 20px;
-        }
-    </style>
+    <link href="../static/styles.css" th:href="@{/styles.css}" rel="stylesheet"/>
 </head>
 <body>
+<!-- History Tracker-->
+<div th:replace="~{/fragments/HistoryTracker :: historyTracker}"></div>
 
-<div class="folder-path" th:unless="${session.historyList.isEmpty()}">
-    <div th:each="log : ${session.historyList}">
-        <a href="#" th:href="@{/folder/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1 →</a>
-    </div>
-</div>
+<!-- Folder Structure -->
+<div th:replace="~{/fragments/FolderStructure :: folderName}"></div>
 
-<div class="folder-name" th:text="${rootFolder.getName()}">
-    Current folder name
-</div>
-<table id="folderList" class="folder" th:each="folder : ${rootFolder.getFolders()}">
-    <tr>
-        <th> <a href="#" th:href="@{/folder/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder name </a> </th>
-        <th> <button> Rename </button> </th>
-        <th>
-            <form method="get" th:action="@{/folder/{id}/delete/{folderToDeleteId}
-                    (id = ${rootFolder.getFolderId()}, folderToDeleteId = ${folder.getFolderId()})}">
-                <button> Delete </button>
-            </form>
-        </th>
-    </tr>
-    <!--Files-->
-    <tr class="file-row" th:each="file : ${rootFolder.getFiles()}">
-        <th>
-            <div class="file-name" th:text="${file.getName()}"> File name</div>
-        </th>
-        <th>
-            <form method="get" th:action="@{/folder/{folderId}/file/rename/{fileToUpdate}
-                    (folderId = ${rootFolder.getFolderId()}, fileToUpdate = ${file.getFileId()})}">
-                <button> Rename</button>
-            </form>
-        </th>
-        <th>
-            <form method="get" th:action="@{/folder/{folderId}/file/delete/{fileToDelete}
-                    (folderId = ${rootFolder.getFolderId()}, fileToDelete = ${file.getFileId()})}">
-                <button> Delete</button>
-            </form>
-        </th>
-        <th>
-            <form method="get">
-                <button> Download</button>
-            </form>
-        </th>
-    </tr>
+<table>
+    <tr th:replace="~{/fragments/FolderStructure :: folders}"></tr>
+
+    <tr th:replace="~{/fragments/FolderStructure :: files}"></tr>
 </table>
-<!--
-<div class="folder" th:each="folder : ${rootFolder.getFolders()}">
-    Child folder 1 <a href="#">Rename</a> <a href="#">Delete</a>
-</div>
-<div class="folder">
-    Child folder 2 <a href="#">Rename</a> <a href="#">Delete</a>
-</div>
-<div class="file">
-    File <a href="#">Rename</a> <a href="#">Delete</a> <a href="#">Download</a>
-</div>
--->
 
+<!-- Add buttons -->
 <div class="add-button">
-    <form  th:action="@{/folder/{id}/new (id=${rootFolder.getFolderId()})}" method="get">
-        <button>Add folder</button>
-    </form>
-<!--    <input type="file" id="fileInput" style="display:none;" onchange="uploadFile()" />-->
+    <div th:replace="~{/fragments/AddButtons :: addFolder}"></div>
     <input id="fileName" type="text" placeholder="New file name">
-    <div id="dropArea" style="border: 2px dashed #ccc; width: 300px; height: 200px; text-align: center; line-height: 200px;">
+    <div id="dropArea" class="drop-box">
         Drag and drop file here
     </div>
-<!--
-    <button onclick="addFile()">Add file</button>
--->
 </div>
 
-<script>
-    // function addFolder() {
-    //     var folderList = document.getElementById(`folderList`);
-    //     var newFolderItem = document.createElement(`div`);
-    //     newFolderItem.classList.add(`folder-item`);
-    //     newFolderItem.innerHTML = `<input type= "text" placeholder="New folder name" th:field="*{}"> `;
-    //     // Implement the function to add a folder
-    //     alert('Add folder clicked!');
-    // }
-    function addFile() {
-        // Implement the function to add a file
-        alert('Add file clicked!');
-    }
-
-    document.getElementById('dropArea').addEventListener('dragover', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'copy';
-    });
-
-    document.getElementById('dropArea').addEventListener('drop', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        const files = event.dataTransfer.files;
-        uploadFile(files[0]);
-    });
-    function uploadFile(file) {
-
-        let formData = new FormData();
-        formData.append('file', file)
-        let fileName = document.getElementById(`fileName`).value;
-        let pathParts = window.location.pathname.split(`/`);
-        let id = pathParts[2];
-        console.log(id);
-
-        // const dto = {
-        //     name: fileName,
-        //     file: formData,
-        //     folderId: id
-        // }
-        //
-        formData.append('file', file);
-
-        formData.append(`fileName`, fileName);
-
-
-
-        fetch("upload", {
-            method: 'POST',
-            body: formData
-            // headers: {
-            //   'Content-Type': 'application/json',
-            // },
-            // body: JSON.stringify(dto)
-        })
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = `/folder/${id}`;
-                } else {
-                    throw new Error('Upload failed');
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-</script>
+<script src="../static/js/scripts.js" th:src="@{/js/scripts.js}"></script>
 
 </body>
 </html>

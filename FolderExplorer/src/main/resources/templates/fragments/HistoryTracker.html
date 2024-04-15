@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>History Tracker</title>
+    <link href="../../static/styles.css" th:href="@{/styles.css}" rel="stylesheet"/>
+</head>
+<body>
+    <div th:fragment="historyTracker" class="folder-path" th:unless="${session.historyList.isEmpty()}">
+    <div th:each="log : ${session.historyList}">
+        <a href="#" th:href="@{/folder/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1
+            →</a>
+    </div>
+</div>
+</body>
+</html>

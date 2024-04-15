@@ -4,157 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Management Interface</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        .folder-path {
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .folder-name {
-            font-size: 24px;
-            color: maroon;
-            margin-bottom: 20px;
-        }
-
-        .file-name {
-            margin-right: 10px;
-            text-decoration: none;
-            font-weight: normal;
-            color: #000;
-        }
-
-        .add-button {
-            margin-top: 20px;
-        }
-
-        .file-row {
-            border-top: 2px solid #d3d3d3; /* Adds a top border */
-            border-bottom: 2px solid #d3d3d3; /* Adds a bottom border */
-        }
-        .folder-row {
-            font-weight: bold; /* Makes the text bold */
-            border-top: 2px solid #d3d3d3; /* Adds a top border */
-            border-bottom: 2px solid #d3d3d3; /* Adds a bottom border */
-        }
-
-        /* Styles for the buttons in the file row */
-        .file-row .button {
-            background-color: #e0e0e0; /* Sets a grey background for buttons */
-            border: 1px solid #c0c0c0; /* Sets the border for buttons */
-            padding: 5px 10px; /* Adds some padding around the button text */
-            text-decoration: none; /* Removes underline from links */
-            color: #333; /* Sets the text color */
-            margin-right: 5px; /* Adds margin to the right of the buttons */
-        }
-
-        /* Hover effect for buttons */
-        .file-row .button:hover {
-            background-color: #d0d0d0; /* Changes the background on hover */
-        }
-        table {
-            /*
-            width: 100%; !* Sets the width of the table to fill the container *!
-            */
-            border-collapse: collapse; /* Collapses borders so there's no space between them */
-        }
-
-        th, td {
-            padding: 8px; /* Adds padding inside each cell */
-            text-align: left; /* Aligns text to the left */
-        }
-
-        tr {
-            border-bottom: 1px solid #ddd; /* Adds a bottom border to each row */
-        }
-
-        /* If you want to style the last row differently */
-        tr:last-child {
-            border-bottom: 2px solid #ccc;
-        }
-    </style>
+    <link href="../static/styles.css" th:href="@{/styles.css}" rel="stylesheet"/>
 </head>
 <body>
 
-<div class="folder-path" th:unless="${session.historyList.isEmpty()}">
-    <div th:each="log : ${session.historyList}">
-        <a href="#" th:href="@{/folder/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1
-            →</a>
-    </div>
-</div>
+<!-- History Tracker-->
+<div th:replace="~{/fragments/HistoryTracker :: historyTracker}"></div>
 
-<div class="folder-name" th:text="${rootFolder.getName()}">
-    Current folder name
-</div>
-<table id="folderList">
-    <!--Folders-->
-    <tr class="folder-row" th:each="folder : ${rootFolder.getFolders()}">
-        <th><a href="#" th:href="@{/folder/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder
-            name </a></th>
-        <th>
-            <form method="get" th:action="@{/folder/{folderId}/rename/{folderToRename}
-             (folderId = ${rootFolder.getFolderId()}, folderToRename = ${folder.getFolderId()})}">
-                <button> Rename</button>
-            </form>
-        </th>
-        <th>
-            <form method="get" th:action="@{/folder/{id}/delete/{folderToDeleteId}
-                    (id = ${rootFolder.getFolderId()}, folderToDeleteId = ${folder.getFolderId()})}">
-                <button> Delete</button>
-            </form>
-        </th>
-    </tr>
-    <!--Files-->
-    <tr class="file-row" th:each="file : ${rootFolder.getFiles()}">
-        <th>
-            <div class="file-name" th:text="${file.getName()}"> File name</div>
-        </th>
-        <th>
-            <form method="get" th:action="@{/folder/{folderId}/file/rename/{fileToUpdate}
-                    (folderId = ${rootFolder.getFolderId()}, fileToUpdate = ${file.getFileId()})}">
-                <button> Rename</button>
-            </form>
-        </th>
-        <th>
-            <form method="get" th:action="@{/folder/{folderId}/file/delete/{fileToDelete}
-                    (folderId = ${rootFolder.getFolderId()}, fileToDelete = ${file.getFileId()})}">
-                <button> Delete</button>
-            </form>
-        </th>
-        <th>
-            <form method="get">
-                <button> Download</button>
-            </form>
-        </th>
-    </tr>
+<!-- Folder Structure -->
+<div th:replace="~{/fragments/FolderStructure :: folderName}"></div>
+<table>
+    <tr th:replace="~{/fragments/FolderStructure :: folders}"></tr>
+
+    <tr th:replace="~{/fragments/FolderStructure :: files}"></tr>
 </table>
-<!--
-<div class="folder" th:each="folder : ${rootFolder.getFolders()}">
-    Child folder 1 <a href="#">Rename</a> <a href="#">Delete</a>
-</div>
-<div class="folder">
-    Child folder 2 <a href="#">Rename</a> <a href="#">Delete</a>
-</div>
-<div class="file">
-    File <a href="#">Rename</a> <a href="#">Delete</a> <a href="#">Download</a>
-</div>
--->
 
+<!-- Add buttons -->
 <div class="add-button">
-    <form th:action="@{/folder/{id}/new (id=${rootFolder.getFolderId()})}" method="get">
-        <button>Add folder</button>
-    </form>
-    <form th:action="@{/folder/{id}/file/upload (id=${rootFolder.getFolderId()})}" method="get">
-        <button>Add file</button>
-    </form>
+    <div th:replace="~{/fragments/AddButtons :: addFolder}"></div>
+    <div th:replace="~{/fragments/AddButtons :: addFile}"></div>
 </div>
 
-<script>
-
-</script>
+<script src="../static/js/scripts.js" th:src="@{/js/scripts.js}"></script>
 
 </body>
 </html>

@@ -4,65 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Management Interface</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        .folder-path {
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .folder-name {
-            font-size: 24px;
-            color: maroon;
-            margin-bottom: 20px;
-        }
-
-        .folder, .file {
-            border-bottom: 1px solid #ccc;
-            padding: 5px 0;
-        }
-
-        .folder a, .file a {
-            margin-right: 10px;
-            text-decoration: none;
-            color: #000;
-        }
-
-        .add-button {
-            margin-top: 20px;
-        }
-    </style>
+    <link href="../static/styles.css" th:href="@{/styles.css}" rel="stylesheet"/>
 </head>
 <body>
 
-<div class="folder-path" th:unless="${session.historyList.isEmpty()}">
-    <div th:each="log : ${session.historyList}">
-        <a href="#" th:href="@{/folder/backwards/{id}(id=${log.getFolderId()})}" th:text="${log.getName()}"> Example 1
-            →</a>
-    </div>
-</div>
+<!-- History Tracker-->
+<div th:replace="~{/fragments/HistoryTracker :: historyTracker}"></div>
 
-<div class="folder-name" th:text="${rootFolder.getName()}">
-    Current folder name
-</div>
+<!-- Folder Structure -->
+<div th:replace="~{/fragments/FolderStructure :: folderName}"></div>
 
-<table id="folderList" class="folder">
-    <tr th:each="folder : ${rootFolder.getFolders()}">
-        <th><a href="#" th:href="@{/home/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder
-            name </a></th>
-        <th>
-            <button> Rename</button>
-        </th>
-        <th>
-            <form method="get" th:action="@{/folder/{id}/delete/{folderToDeleteId}
-                    (id = ${rootFolder.getFolderId()}, folderToDeleteId = ${folder.getFolderId()})}">
-                <button> Delete </button>
-            </form>
-        </th>
-    </tr>
+<table>
+    <tr th:replace="~{/fragments/FolderStructure :: folders}"></tr>
     <tr>
         <th>
             <form id="create_form" th:action="@{__${requestURI}__}" th:object="${newFolder}" method="post">
@@ -70,57 +23,16 @@
             </form>
         </th>
     </tr>
-    <!--Files-->
-    <tr class="file-row" th:each="file : ${rootFolder.getFiles()}">
-        <th>
-            <div class="file-name" th:text="${file.getName()}"> File name</div>
-        </th>
-        <th>
-            <form method="get" th:action="@{/folder/{folderId}/file/rename/{fileToUpdate}
-                    (folderId = ${rootFolder.getFolderId()}, fileToUpdate = ${file.getFileId()})}">
-                <button> Rename</button>
-            </form>
-        </th>
-        <th>
-            <form method="get" th:action="@{/folder/{folderId}/file/delete/{fileToDelete}
-                    (folderId = ${rootFolder.getFolderId()}, fileToDelete = ${file.getFileId()})}">
-                <button> Delete</button>
-            </form>
-        </th>
-        <th>
-            <form method="get">
-                <button> Download</button>
-            </form>
-        </th>
-    </tr>
+    <tr th:replace="~{/fragments/FolderStructure :: files}"></tr>
 </table>
-<!--
-<div class="folder" th:each="folder : ${rootFolder.getFolders()}">
-    Child folder 1 <a href="#">Rename</a> <a href="#">Delete</a>
-</div>
-<div class="folder">
-    Child folder 2 <a href="#">Rename</a> <a href="#">Delete</a>
-</div>
-<div class="file">
-    File <a href="#">Rename</a> <a href="#">Delete</a> <a href="#">Download</a>
-</div>
--->
 
+<!-- Add buttons -->
 <div class="add-button">
-    <button onclick="addFolder()" >Add folder</button>
-    <button onclick="addFile()">Add file</button>
+    <button onclick="addFolder()">Add folder</button>
+    <div th:replace="~{/fragments/AddButtons :: addFile}"></div>
 </div>
 
-<script>
-    function addFolder() {
-        document.getElementById(`create_form`).submit();
-    }
-
-    function addFile() {
-        // Implement the function to add a file
-        alert('Add file clicked!');
-    }
-</script>
+<script src="../static/js/scripts.js" th:src="@{/js/scripts.js}"></script>
 
 </body>
 </html>

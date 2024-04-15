@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Folder Structure</title>
+    <link href="../../static/styles.css" th:href="@{/styles.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:fragment="folderName">
+    <div class="folder-name" th:text="${rootFolder.getName()}">
+        Current folder name
+    </div>
+</div>
+
+<table id="folderList">
+    <!--Folders-->
+    <tr class="folder-row" th:each="folder : ${rootFolder.getFolders()}" th:fragment="folders">
+        <th><a href="#" th:href="@{/folder/{id}(id=${folder.getFolderId()})}" th:text="${folder.getName()}"> Folder
+            name </a></th>
+        <th>
+            <form method="get" th:action="@{/folder/{folderId}/rename/{folderToRename}
+             (folderId = ${rootFolder.getFolderId()}, folderToRename = ${folder.getFolderId()})}">
+                <button> Rename</button>
+            </form>
+        </th>
+        <th>
+            <form method="get" th:action="@{/folder/{id}/delete/{folderToDeleteId}
+                    (id = ${rootFolder.getFolderId()}, folderToDeleteId = ${folder.getFolderId()})}">
+                <button> Delete</button>
+            </form>
+        </th>
+    </tr>
+    <!--Files-->
+    <tr class="file-row" th:each="file : ${rootFolder.getFiles()}" th:fragment="files">
+        <th>
+            <div class="file-name" th:text="${file.getName()}"> File name</div>
+        </th>
+        <th>
+            <form method="get" th:action="@{/folder/{folderId}/file/rename/{fileToUpdate}
+                    (folderId = ${rootFolder.getFolderId()}, fileToUpdate = ${file.getFileId()})}">
+                <button> Rename</button>
+            </form>
+        </th>
+        <th>
+            <form method="get" th:action="@{/folder/{folderId}/file/delete/{fileToDelete}
+                    (folderId = ${rootFolder.getFolderId()}, fileToDelete = ${file.getFileId()})}">
+                <button> Delete</button>
+            </form>
+        </th>
+        <th>
+            <form method="get" action="#">
+                <button type="button" th:onclick="'javascript:downloadFile(' + ${file.getFileId()} + ')'">
+                    Download
+                </button>
+            </form>
+        </th>
+    </tr>
+</table>
+</body>
+<script src="../../static/js/scripts.js" th:src="@{/js/scripts.js}"></script>
+
+</html>
