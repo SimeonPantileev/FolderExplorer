@@ -6,21 +6,18 @@ import com.example.folderexplorer.service.Navigation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 
 @Component
 public class FileMapper {
-    private final Navigation navigation;
-
-    @Autowired
-    public FileMapper(Navigation navigation) {
-        this.navigation = navigation;
-    }
-
-    public File fromDto(FileDto dto){
+    public File toFile(Optional<String> name){
+        String currentName = "New File";
+        if (name.isPresent() && name.get().length() != 0) {
+            currentName = name.get();
+        }
         File file = new File();
-        file.setName(dto.getName().orElse("New Folder"));
-        //ToDo think of removing the use of the service here
-        file.setFolder(navigation.enterFolderById(dto.getFolderId()));
+        file.setName(currentName);
         return file;
     }
 }

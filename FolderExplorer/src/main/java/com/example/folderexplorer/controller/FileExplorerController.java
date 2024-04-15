@@ -5,7 +5,6 @@ import com.example.folderexplorer.models.File;
 import com.example.folderexplorer.models.Folder;
 import com.example.folderexplorer.service.FileManager;
 import com.example.folderexplorer.service.Navigation;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,24 +29,20 @@ public class FileExplorerController {
     }
 
     @GetMapping("/upload")
-    public String showFileUploadPage(@PathVariable int folderId, Model model, HttpSession session) {
+    public String showFileUploadPage(@PathVariable int folderId, Model model) {
         Folder currentFolder = navigationService.enterFolderById(folderId);
         model.addAttribute("rootFolder", currentFolder);
         return "AddFilePage";
     }
 
     @PostMapping("/upload")
-    public String handleFileUpload(/*@RequestBody FileDto dto,*/
-            @RequestParam("file") MultipartFile fileContent,
-            @RequestParam("fileName") Optional<String> fileName,
-            Model model,
-            @PathVariable int folderId) {
+    public String handleFileUpload(@RequestParam("file") MultipartFile fileContent,
+                                   @RequestParam("fileName") Optional<String> fileName,
+                                   Model model,
+                                   @PathVariable int folderId) {
         try {
-            String name = "New File";
-            if (fileName.isPresent() && fileName.get().length() != 0) {
-                name = fileName.get();
-            }
-            File file = new File(name, navigationService.enterFolderById(folderId));
+            File file = fileMapper.toFile(fileName);
+            file.setFolder(navigationService.enterFolderById(folderId));
             fileManager.fileUpload(file, fileContent);
             model.addAttribute("rootFolder", navigationService.enterFolderById(folderId));
             return "redirect:/folder/" + folderId;

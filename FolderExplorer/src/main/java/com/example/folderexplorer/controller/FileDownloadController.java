@@ -31,25 +31,23 @@ public class FileDownloadController {
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists()) {
-                // Log that the file exists and is about to be returned
                 System.out.println("File found: " + resource.getFilename());
 
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .header(HttpHeaders.CONTENT_DISPOSITION,
+                                "attachment; filename=\""
+                                        + resource.getFilename() + "\"")
                         .body(resource);
             } else {
-                // Log that the file does not exist
                 System.out.println("File not found: " + filePath.toString());
 
                 return ResponseEntity.notFound().build();
             }
         } catch (NumberFormatException e) {
-            // Log the exception for debugging
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            // Log the exception for debugging
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }

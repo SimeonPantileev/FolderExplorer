@@ -26,6 +26,6 @@ public class HomeController {
         Folder rootFolder = navigationService.getRoot();
         historyHelper.createHistoryList(session);
         model.addAttribute("rootFolder", rootFolder);
-        return "HomePage";
+        return "FolderContent";
     }
 }

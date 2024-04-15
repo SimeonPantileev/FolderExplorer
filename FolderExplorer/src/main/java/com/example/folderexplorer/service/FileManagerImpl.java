@@ -15,7 +15,6 @@ import java.nio.file.Paths;
 @Service
 public class FileManagerImpl implements FileManager {
     private static final String UPLOAD_DIR = "uploads/";
-
     private final FileRepo fileRepo;
 
     @Autowired
@@ -28,28 +27,23 @@ public class FileManagerImpl implements FileManager {
         if (multipartFile.isEmpty()) {
             throw new FileNotFoundException();
         }
-
         try {
             Path path = getPath(file);
             file.setFileAddress(path.toAbsolutePath().toString());
             try {
-                // Check if file already exists and if so, just update it
                 fileRepo.getFileByFileAddress(path.toAbsolutePath().toString());
                 fileRepo.updateFile(file);
-            } catch (EntityNotFoundException e){
-                // Save the file
+            } catch (EntityNotFoundException e) {
                 multipartFile.transferTo(path);
                 fileRepo.createFile(file);
             }
             System.out.println("File Saved!");
         } catch (IOException e) {
-            //ToDo maybe catch the exception in controller and give proper http response?
             e.printStackTrace();
         }
     }
 
     private static Path getPath(File file) {
-        // Build the path to where the file will be saved
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(file.getFolder().getFolderId());
         stringBuilder.append("_");
@@ -71,16 +65,17 @@ public class FileManagerImpl implements FileManager {
 
     @Override
     public File renameFile(int id, String newFileName) {
-        File fileToUpdate= getFileById(id);
+        File fileToUpdate = getFileById(id);
         fileToUpdate.setName(newFileName);
         renameInUploadDirectory(fileToUpdate);
         return fileRepo.updateFile(fileToUpdate);
     }
-    private void renameInUploadDirectory(File fileToRename){
+
+    private void renameInUploadDirectory(File fileToRename) {
         Path newPath = getPath(fileToRename);
 
         java.io.File existingFile = new java.io.File(fileToRename.getFileAddress());
-        if(existingFile.renameTo(newPath.toFile())){
+        if (existingFile.renameTo(newPath.toFile())) {
             fileToRename.setFileAddress(newPath.toAbsolutePath().toString());
             System.out.println("File has been successfully renamed.");
         } else {

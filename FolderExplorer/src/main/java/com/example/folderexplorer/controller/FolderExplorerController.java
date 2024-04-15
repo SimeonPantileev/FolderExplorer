@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -30,47 +29,40 @@ public class FolderExplorerController {
     }
 
 
-    @GetMapping("/{id}")
-    public String showCurrentFolder(@PathVariable int id, Model model, HttpSession session) {
-        Folder currentFolder = navigationService.enterFolderById(id);
+    @GetMapping("/{folderId}")
+    public String showCurrentFolder(@PathVariable int folderId, Model model, HttpSession session) {
+        Folder currentFolder = navigationService.enterFolderById(folderId);
         historyHelper.addToHistoryList(session, currentFolder.getAncestorFolder());
         model.addAttribute("rootFolder", currentFolder);
-        return "HomePage";
+        return "FolderContent";
     }
-
-    //ToDo change mapping to post?
-    @GetMapping("/backwards/{id}")
-    public String showCurrentFolderBackwards(@PathVariable int id, Model model, HttpSession session) {
-        Folder currentFolder = navigationService.enterFolderById(id);
+    @GetMapping("/backwards/{folderId}")
+    public String showCurrentFolderBackwards(@PathVariable int folderId, Model model, HttpSession session) {
+        Folder currentFolder = navigationService.enterFolderById(folderId);
         historyHelper.removeFromHistoryList(session, currentFolder.getAncestorFolder());
         model.addAttribute("rootFolder", currentFolder);
-        return "HomePage";
+        return "redirect:/folder/" + folderId;
     }
 
-    @GetMapping("{id}/new")
-    public String showCreateFolderPage(@PathVariable int id, Model model, HttpSession session) {
-        Folder currentFolder = navigationService.enterFolderById(id);
+    @GetMapping("{folderId}/new")
+    public String showCreateFolderPage(@PathVariable int folderId, Model model) {
+        Folder currentFolder = navigationService.enterFolderById(folderId);
         model.addAttribute("newFolder", new FolderDto());
         model.addAttribute("rootFolder", currentFolder);
         return "NewFolderPage";
     }
-
-    //ToDo add mapper inseatd of mapping logic in controller
-    @PostMapping("{id}/new")
-    public String createFolder(@PathVariable int id,
-                               @ModelAttribute("newFolder") FolderDto folderDto,
-                               BindingResult bindingResult,
-                               Model model,
-                               HttpSession session) {
-        folderDto.setAncestorFolderId(id);
-        navigationService.createFolder(folderDto.getFolderName(), folderDto.getAncestorFolderId());
-        return "redirect:/folder/" + id;
+    @PostMapping("{folderId}/new")
+    public String createFolder(@PathVariable int folderId,
+                               @ModelAttribute("newFolder") FolderDto folderDto) {
+        navigationService.createFolder(folderDto.getFolderName(), folderId);
+        return "redirect:/folder/" + folderId;
     }
 
-    @GetMapping("/{id}/delete/{folderToDelete}")
-    public String deleteFolder(@PathVariable int id, @PathVariable int folderToDelete, Model model, HttpSession session) {
+    @GetMapping("/{folderId}/delete/{folderToDelete}")
+    public String deleteFolder(@PathVariable int folderId,
+                               @PathVariable int folderToDelete) {
         navigationService.deleteFolder(folderToDelete);
-        return "redirect:/folder/" + id;
+        return "redirect:/folder/" + folderId;
     }
 
     @GetMapping("/{folderId}/rename/{folderToRename}")
