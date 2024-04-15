@@ -1,7 +1,5 @@
 package com.example.folderexplorer.models.dtos;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Optional;
 
 public class FileDto {
@@ -10,6 +8,7 @@ public class FileDto {
 
     public FileDto() {
     }
+
     public Optional<String> getName() {
         return name;
     }

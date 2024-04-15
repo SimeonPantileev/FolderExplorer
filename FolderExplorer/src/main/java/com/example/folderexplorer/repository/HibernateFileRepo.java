@@ -22,7 +22,7 @@ public class HibernateFileRepo implements FileRepo {
             Query<File> query = session.createQuery(hql, File.class);
             query.setParameter("file_address", fileAddress);
             File file = query.uniqueResult();
-            if(file == null){
+            if (file == null) {
                 throw new EntityNotFoundException("File", "address", fileAddress);
             }
             return file;
