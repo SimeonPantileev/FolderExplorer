@@ -1,0 +1,1 @@
+# That folder is dedicated for uploading and storing the files.
