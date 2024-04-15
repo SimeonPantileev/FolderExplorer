@@ -1,5 +1,6 @@
 package com.example.folderexplorer.controller;
 
+import com.example.folderexplorer.exceptions.EntityNotFoundException;
 import com.example.folderexplorer.helpers.HistoryHelper;
 import com.example.folderexplorer.models.Folder;
 import com.example.folderexplorer.models.dtos.FolderDto;
@@ -31,11 +32,16 @@ public class FolderExplorerController {
 
     @GetMapping("/{folderId}")
     public String showCurrentFolder(@PathVariable int folderId, Model model, HttpSession session) {
-        Folder currentFolder = navigationService.enterFolderById(folderId);
-        historyHelper.addToHistoryList(session, currentFolder.getAncestorFolder());
-        model.addAttribute("rootFolder", currentFolder);
-        return "FolderContent";
+        try {
+            Folder currentFolder = navigationService.enterFolderById(folderId);
+            historyHelper.addToHistoryList(session, currentFolder.getAncestorFolder());
+            model.addAttribute("rootFolder", currentFolder);
+            return "FolderContent";
+        } catch (EntityNotFoundException e) {
+            return "FolderNotFound";
+        }
     }
+
     @GetMapping("/backwards/{folderId}")
     public String showCurrentFolderBackwards(@PathVariable int folderId, Model model, HttpSession session) {
         Folder currentFolder = navigationService.enterFolderById(folderId);
@@ -51,6 +57,7 @@ public class FolderExplorerController {
         model.addAttribute("rootFolder", currentFolder);
         return "NewFolderPage";
     }
+
     @PostMapping("{folderId}/new")
     public String createFolder(@PathVariable int folderId,
                                @ModelAttribute("newFolder") FolderDto folderDto) {
